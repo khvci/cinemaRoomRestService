@@ -21,6 +21,7 @@ public class Controller {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The ticket has been already purchased!");
         } else {
             cinema.setPurchasedSeats(seat.getSeatId());
+            cinema.setAvailableSeats(seat);
             return seat;
         }
     }
