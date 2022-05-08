@@ -1,12 +1,18 @@
 package co.kahveci.cinemaRoomRestService;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.util.ArrayList;
 import java.util.List;
+
 
 public class Cinema {
     private int totalRows;
     private int totalColumns;
     private List<Seat> availableSeats;
+
+    @JsonIgnore
+    private ArrayList<Integer> purchasedSeats = new ArrayList<>();
 
     public Cinema(int totalRows, int totalColumns) {
         this.totalRows = totalRows;
@@ -42,5 +48,13 @@ public class Cinema {
 
     public void setAvailableSeats(List<Seat> availableSeats) {
         this.availableSeats = availableSeats;
+    }
+
+    public ArrayList<Integer> getPurchasedSeats() {
+        return purchasedSeats;
+    }
+
+    public void setPurchasedSeats(int seatId) {
+        this.purchasedSeats.add(seatId);
     }
 }
