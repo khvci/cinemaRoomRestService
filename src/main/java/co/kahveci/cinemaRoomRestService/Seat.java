@@ -6,7 +6,7 @@ public class Seat {
     private int row;
     private int column;
     private final int price;
-
+    @JsonIgnore
     private final int seatId;
 
     public Seat(int row, int column) {
