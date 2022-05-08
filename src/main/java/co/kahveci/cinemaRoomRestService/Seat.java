@@ -1,14 +1,19 @@
 package co.kahveci.cinemaRoomRestService;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 public class Seat {
     private int row;
     private int column;
     private final int price;
 
+    private final int seatId;
+
     public Seat(int row, int column) {
         this.row = row;
         this.column = column;
         this.price = row <= 4 ? 10 : 8;
+        this.seatId = seatIdGenerator(row, column);
     }
 
     public int getRow() {
@@ -30,4 +35,13 @@ public class Seat {
     public int getPrice() {
         return price;
     }
+
+    public int getSeatId() {
+        return seatId;
+    }
+    static int seatIdGenerator(int row, int column) {
+        return row * 10 + column;
+    }
 }
+
+
