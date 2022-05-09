@@ -1,10 +1,8 @@
 package co.kahveci.cinemaRoomRestService;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import java.util.ArrayList;
 import java.util.List;
-
 
 public class Cinema {
     private int totalRows;
