@@ -24,7 +24,8 @@ public class Controller {
         } else {
             cinema.setPurchasedSeats(seat.getSeatId());
             cinema.setAvailableSeats(seat);
-            return new ResponseEntity<>(seat, HttpStatus.OK);
+            Ticket ticket = new Ticket(seat);
+            return new ResponseEntity<>(ticket, HttpStatus.OK);
         }
     }
 }
