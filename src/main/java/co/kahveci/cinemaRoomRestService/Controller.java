@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
+import java.util.UUID;
 
 @RestController
 public class Controller {
@@ -22,10 +23,25 @@ public class Controller {
         } else if (cinema.getPurchasedSeats().contains(seat.getSeatId())) {
             return new ResponseEntity<>(Map.of("error", "The ticket has been already purchased!"), HttpStatus.BAD_REQUEST);
         } else {
-            cinema.setPurchasedSeats(seat.getSeatId());
-            cinema.setAvailableSeats(seat);
+            cinema.addToPurchasedSeats(seat.getSeatId());
+            cinema.removeFromAvailableSeats(seat);
             Ticket ticket = new Ticket(seat);
+            ticket.addToPurchasedTickets(seat);
             return new ResponseEntity<>(ticket, HttpStatus.OK);
         }
     }
+
+    @PostMapping("/return")
+    public ResponseEntity<?> returnTicket(@RequestBody UUID token) {
+        if (Ticket.getPurchasedTickets().containsKey(token)) {
+            Seat seat = Ticket.getPurchasedTickets().get(token);
+            cinema.returnSeat(seat);
+            cinema.addToAvailableSeats(seat);
+            Ticket.removeFromPurchasedTickets(token);
+            return new ResponseEntity<>(Map.of("returned_ticket", seat), HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(Map.of("error", "Wrong Token!"), HttpStatus.BAD_REQUEST);
+        }
+    }
+
 }

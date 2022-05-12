@@ -1,9 +1,7 @@
 package co.kahveci.cinemaRoomRestService;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -22,8 +20,12 @@ public class Ticket {
         return token;
     }
 
-    public void setToken(UUID token, Seat seat) {
-        Ticket.purchasedTickets.put(token, seat);
+    public void addToPurchasedTickets(Seat seat) {
+        purchasedTickets.put(this.token, seat);
+    }
+
+    public static void removeFromPurchasedTickets(UUID token) {
+        Ticket.purchasedTickets.remove(token);
     }
 
     public Seat getTicket() {
