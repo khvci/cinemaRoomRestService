@@ -3,7 +3,9 @@ package co.kahveci.cinemaRoomRestService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.Map;
+import java.util.UUID;
 
 @RestController
 public class Controller {
@@ -24,18 +26,18 @@ public class Controller {
             cinema.addToPurchasedSeats(seat.getSeatId());
             cinema.removeFromAvailableSeats(seat);
             Ticket ticket = new Ticket(seat);
-            cinema.addToPurchasedTickets(ticket);
+            ticket.addToPurchasedTickets(seat);
             return new ResponseEntity<>(ticket, HttpStatus.OK);
         }
     }
 
     @PostMapping("/return")
-    public ResponseEntity<?> returnTicket(@RequestBody String token) {
-        if (cinema.getPurchasedTickets().containsKey(token)) {
-            Seat seat = cinema.getPurchasedTickets().get(token);
+    public ResponseEntity<?> returnTicket(@RequestBody UUID token) {
+        if (Ticket.getPurchasedTickets().containsKey(token)) {
+            Seat seat = Ticket.getPurchasedTickets().get(token);
             cinema.returnSeat(seat);
             cinema.addToAvailableSeats(seat);
-            cinema.removeFromPurchasedTickets(token);
+            Ticket.removeFromPurchasedTickets(token);
             return new ResponseEntity<>(Map.of("returned_ticket", seat), HttpStatus.OK);
         } else {
             return new ResponseEntity<>(Map.of("error", "Wrong Token!"), HttpStatus.BAD_REQUEST);
