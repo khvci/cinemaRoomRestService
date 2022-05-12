@@ -44,16 +44,23 @@ public class Cinema {
         return availableSeats;
     }
 
-    public void setAvailableSeats(Seat seat) {
+    public void removeFromAvailableSeats(Seat seat) {
         availableSeats.removeIf(s -> seat.getSeatId() == s.getSeatId());
 
+    }
+    public void addToAvailableSeats(Seat seat) {
+        availableSeats.add(seat);
+    }
+
+    public void returnSeat(Seat seat) {
+        availableSeats.add(seat);
     }
 
     public ArrayList<Integer> getPurchasedSeats() {
         return purchasedSeats;
     }
 
-    public void setPurchasedSeats(int seatId) {
+    public void addToPurchasedSeats(int seatId) {
         this.purchasedSeats.add(seatId);
     }
 }
