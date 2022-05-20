@@ -39,7 +39,7 @@ public class Seat {
     public int getSeatId() {
         return seatId;
     }
-    static int seatIdGenerator(int row, int column) {
+    int seatIdGenerator(int row, int column) {
         return row * 10 + column;
     }
 }
