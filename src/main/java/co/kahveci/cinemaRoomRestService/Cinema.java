@@ -2,15 +2,19 @@ package co.kahveci.cinemaRoomRestService;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Cinema {
     private int totalRows;
     private int totalColumns;
     private List<Seat> availableSeats;
+    @JsonIgnore
+    private Map<String, Seat> purchasedTickets;
 
     @JsonIgnore
-    private ArrayList<Integer> purchasedSeats = new ArrayList<>();
+    private ArrayList<Integer> purchasedSeats;
 
     public Cinema(int totalRows, int totalColumns) {
         this.totalRows = totalRows;
@@ -22,23 +26,19 @@ public class Cinema {
                 availableSeats.add(seat);
             }
         }
+        this.purchasedTickets = new HashMap<>();
+        this.purchasedSeats = new ArrayList<>();
     }
 
     public int getTotalRows() {
         return totalRows;
     }
 
-    public void setTotalRows(int totalRows) {
-        this.totalRows = totalRows;
-    }
 
     public int getTotalColumns() {
         return totalColumns;
     }
 
-    public void setTotalColumns(int totalColumns) {
-        this.totalColumns = totalColumns;
-    }
 
     public List<Seat> getAvailableSeats() {
         return availableSeats;
@@ -62,5 +62,17 @@ public class Cinema {
 
     public void addToPurchasedSeats(int seatId) {
         this.purchasedSeats.add(seatId);
+    }
+
+    public void addToPurchasedTickets(Ticket ticket) {
+        purchasedTickets.put(ticket.getToken(), ticket.getSeat());
+    }
+
+    public Map<String, Seat> getPurchasedTickets() {
+        return purchasedTickets;
+    }
+
+    public void removeFromPurchasedTickets(String token) {
+        purchasedTickets.remove(token);
     }
 }
