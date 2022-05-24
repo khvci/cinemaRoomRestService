@@ -2,7 +2,7 @@ package co.kahveci.cinemaRoomRestService;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-public class Seat {
+public class Seat implements Comparable<Seat> {
     private int row;
     private int column;
     private final int price;
@@ -41,6 +41,12 @@ public class Seat {
     }
     int seatIdGenerator(int row, int column) {
         return row * 10 + column;
+    }
+
+    @Override
+    public int compareTo(Seat seat) {
+        int id = seat.getSeatId();
+        return this.seatId - id;
     }
 }
 

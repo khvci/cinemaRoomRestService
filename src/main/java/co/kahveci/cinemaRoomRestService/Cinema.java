@@ -1,10 +1,8 @@
 package co.kahveci.cinemaRoomRestService;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+
+import java.util.*;
 
 public class Cinema {
     private int totalRows;
@@ -26,7 +24,7 @@ public class Cinema {
                 availableSeats.add(seat);
             }
         }
-        this.purchasedTickets = new HashMap<>();
+        this.purchasedTickets = new TreeMap<>();
         this.purchasedSeats = new ArrayList<>();
     }
 
@@ -75,4 +73,10 @@ public class Cinema {
     public void removeFromPurchasedTickets(String token) {
         purchasedTickets.remove(token);
     }
+
+    public void sortAvailableSeats() {
+        Collections.sort(availableSeats);
+    }
+
+
 }

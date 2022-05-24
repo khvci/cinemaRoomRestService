@@ -30,11 +30,11 @@ public class Controller {
     }
 
     @PostMapping("/return")
-    public ResponseEntity<?> returnTicket(@RequestBody String token) {
+    public ResponseEntity<?> returnTicket(@RequestParam String token) {
         if (cinema.getPurchasedTickets().containsKey(token)) {
             Seat seat = cinema.getPurchasedTickets().get(token);
             cinema.returnSeat(seat);
-            cinema.addToAvailableSeats(seat);
+            cinema.sortAvailableSeats();
             cinema.removeFromPurchasedTickets(token);
             return new ResponseEntity<>(Map.of("returned_ticket", seat), HttpStatus.OK);
         } else {
