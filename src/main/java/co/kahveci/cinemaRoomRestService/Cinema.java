@@ -52,6 +52,7 @@ public class Cinema {
 
     public void returnSeat(Seat seat) {
         availableSeats.add(seat);
+        purchasedSeats.removeIf(s -> s == seat.getSeatId());
     }
 
     public ArrayList<Integer> getPurchasedSeats() {
