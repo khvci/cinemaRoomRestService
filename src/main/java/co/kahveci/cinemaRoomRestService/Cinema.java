@@ -1,12 +1,11 @@
 package co.kahveci.cinemaRoomRestService;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import java.util.*;
 
 public class Cinema {
-    private int totalRows;
-    private int totalColumns;
+    private final int totalRows;
+    private final int totalColumns;
     private List<Seat> availableSeats;
     @JsonIgnore
     private Map<String, Seat> purchasedTickets;
@@ -28,56 +27,43 @@ public class Cinema {
         this.purchasedSeats = new ArrayList<>();
     }
 
+    public void buyTicket(Seat seat, Ticket ticket) {
+        purchasedSeats.add(seat.getSeatId());
+        availableSeats.removeIf(s -> seat.getSeatId() == s.getSeatId());
+        purchasedTickets.put(ticket.getToken(), ticket.getSeat());
+    }
+
+    public void returnTicket(Seat seat, String token) {
+        purchasedTickets.remove(token);
+        availableSeats.add(seat);
+        purchasedSeats.removeIf(s -> s == seat.getSeatId());
+        Collections.sort(availableSeats);
+    }
+
     public int getTotalRows() {
         return totalRows;
     }
-
 
     public int getTotalColumns() {
         return totalColumns;
     }
 
-
     public List<Seat> getAvailableSeats() {
         return availableSeats;
-    }
-
-    public void removeFromAvailableSeats(Seat seat) {
-        availableSeats.removeIf(s -> seat.getSeatId() == s.getSeatId());
-
-    }
-    public void addToAvailableSeats(Seat seat) {
-        availableSeats.add(seat);
-    }
-
-    public void returnSeat(Seat seat) {
-        availableSeats.add(seat);
-        purchasedSeats.removeIf(s -> s == seat.getSeatId());
     }
 
     public ArrayList<Integer> getPurchasedSeats() {
         return purchasedSeats;
     }
 
-    public void addToPurchasedSeats(int seatId) {
-        this.purchasedSeats.add(seatId);
-    }
-
-    public void addToPurchasedTickets(Ticket ticket) {
-        purchasedTickets.put(ticket.getToken(), ticket.getSeat());
-    }
-
     public Map<String, Seat> getPurchasedTickets() {
         return purchasedTickets;
     }
 
-    public void removeFromPurchasedTickets(String token) {
-        purchasedTickets.remove(token);
+    public boolean isSeatOutOfRange(Seat seat) {
+        if (seat.getColumn() < 1 || seat.getColumn() > totalColumns) {
+            return true;
+        }
+        return seat.getRow() < 1 || seat.getRow() > totalRows;
     }
-
-    public void sortAvailableSeats() {
-        Collections.sort(availableSeats);
-    }
-
-
 }

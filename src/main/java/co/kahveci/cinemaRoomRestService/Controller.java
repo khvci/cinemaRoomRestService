@@ -16,7 +16,7 @@ public class Controller {
 
     @PostMapping("/purchase")
     public ResponseEntity<?> purchaseSeat(@RequestBody Seat seat) {
-        if ((seat.getColumn() < 1 || seat.getColumn() > cinema.getTotalColumns()) || seat.getRow() < 1 || seat.getRow() > cinema.getTotalRows()) {
+        if (cinema.isSeatOutOfRange(seat)) {
             return new ResponseEntity<>(Map.of("error", "The number of a row or a column is out of bounds!"), HttpStatus.BAD_REQUEST);
         }
 
@@ -24,24 +24,19 @@ public class Controller {
             return new ResponseEntity<>(Map.of("error", "The ticket has been already purchased!"), HttpStatus.BAD_REQUEST);
         }
 
-        cinema.addToPurchasedSeats(seat.getSeatId());
-        cinema.removeFromAvailableSeats(seat);
         Ticket ticket = new Ticket(seat);
-        cinema.addToPurchasedTickets(ticket);
+        cinema.buyTicket(seat, ticket);
         return new ResponseEntity<>(ticket, HttpStatus.OK);
-
     }
 
     @PostMapping("/return")
     public ResponseEntity<?> returnTicket(@RequestParam String token) {
-        if (cinema.getPurchasedTickets().containsKey(token)) {
-            Seat seat = cinema.getPurchasedTickets().get(token);
-            cinema.returnSeat(seat);
-            cinema.sortAvailableSeats();
-            cinema.removeFromPurchasedTickets(token);
-            return new ResponseEntity<>(Map.of("returned_ticket", seat), HttpStatus.OK);
+        if (!cinema.getPurchasedTickets().containsKey(token)) {
+            return new ResponseEntity<>(Map.of("error", "Wrong Token!"), HttpStatus.BAD_REQUEST);
         }
 
-        return new ResponseEntity<>(Map.of("error", "Wrong Token!"), HttpStatus.BAD_REQUEST);
+        Seat seat = cinema.getPurchasedTickets().get(token);
+        cinema.returnTicket(seat, token);
+        return new ResponseEntity<>(Map.of("returned_ticket", seat), HttpStatus.OK);
     }
 }
