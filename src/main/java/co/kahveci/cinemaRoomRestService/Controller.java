@@ -18,15 +18,18 @@ public class Controller {
     public ResponseEntity<?> purchaseSeat(@RequestBody Seat seat) {
         if ((seat.getColumn() < 1 || seat.getColumn() > cinema.getTotalColumns()) || seat.getRow() < 1 || seat.getRow() > cinema.getTotalRows()) {
             return new ResponseEntity<>(Map.of("error", "The number of a row or a column is out of bounds!"), HttpStatus.BAD_REQUEST);
-        } else if (cinema.getPurchasedSeats().contains(seat.getSeatId())) {
-            return new ResponseEntity<>(Map.of("error", "The ticket has been already purchased!"), HttpStatus.BAD_REQUEST);
-        } else {
-            cinema.addToPurchasedSeats(seat.getSeatId());
-            cinema.removeFromAvailableSeats(seat);
-            Ticket ticket = new Ticket(seat);
-            cinema.addToPurchasedTickets(ticket);
-            return new ResponseEntity<>(ticket, HttpStatus.OK);
         }
+
+        if (cinema.getPurchasedSeats().contains(seat.getSeatId())) {
+            return new ResponseEntity<>(Map.of("error", "The ticket has been already purchased!"), HttpStatus.BAD_REQUEST);
+        }
+
+        cinema.addToPurchasedSeats(seat.getSeatId());
+        cinema.removeFromAvailableSeats(seat);
+        Ticket ticket = new Ticket(seat);
+        cinema.addToPurchasedTickets(ticket);
+        return new ResponseEntity<>(ticket, HttpStatus.OK);
+
     }
 
     @PostMapping("/return")
@@ -37,9 +40,8 @@ public class Controller {
             cinema.sortAvailableSeats();
             cinema.removeFromPurchasedTickets(token);
             return new ResponseEntity<>(Map.of("returned_ticket", seat), HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(Map.of("error", "Wrong Token!"), HttpStatus.BAD_REQUEST);
         }
-    }
 
+        return new ResponseEntity<>(Map.of("error", "Wrong Token!"), HttpStatus.BAD_REQUEST);
+    }
 }
