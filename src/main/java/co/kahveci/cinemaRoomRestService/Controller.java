@@ -41,7 +41,11 @@ public class Controller {
     }
 
     @PostMapping("/stats")
-    public ResponseEntity<?> getStats(@RequestParam String password) {
+    public ResponseEntity<?> getStats(@RequestBody String password) {
+        password = password
+                .split("password\": \"")[1]
+                .split("\"")[0];
+
         if (!password.equals("super_secret")) {
             return new ResponseEntity<>(Map.of("error", "The password is wrong!"), HttpStatus.UNAUTHORIZED);
         }
