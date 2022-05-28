@@ -13,6 +13,10 @@ public class Cinema {
     @JsonIgnore
     private ArrayList<Integer> purchasedSeats;
 
+    @JsonIgnore
+    private int currentIncome;
+
+
     public Cinema(int totalRows, int totalColumns) {
         this.totalRows = totalRows;
         this.totalColumns = totalColumns;
@@ -25,19 +29,29 @@ public class Cinema {
         }
         this.purchasedTickets = new TreeMap<>();
         this.purchasedSeats = new ArrayList<>();
+        this.currentIncome = 0;
     }
 
     public void buyTicket(Seat seat, Ticket ticket) {
         purchasedSeats.add(seat.getSeatId());
         availableSeats.removeIf(s -> seat.getSeatId() == s.getSeatId());
         purchasedTickets.put(ticket.getToken(), ticket.getSeat());
+        currentIncome += seat.getPrice();
     }
 
     public void returnTicket(Seat seat, String token) {
         purchasedTickets.remove(token);
         availableSeats.add(seat);
         purchasedSeats.removeIf(s -> s == seat.getSeatId());
+        currentIncome -= seat.getPrice();
         Collections.sort(availableSeats);
+    }
+
+    public boolean isSeatOutOfRange(Seat seat) {
+        if (seat.getColumn() < 1 || seat.getColumn() > totalColumns) {
+            return true;
+        }
+        return seat.getRow() < 1 || seat.getRow() > totalRows;
     }
 
     public int getTotalRows() {
@@ -60,10 +74,7 @@ public class Cinema {
         return purchasedTickets;
     }
 
-    public boolean isSeatOutOfRange(Seat seat) {
-        if (seat.getColumn() < 1 || seat.getColumn() > totalColumns) {
-            return true;
-        }
-        return seat.getRow() < 1 || seat.getRow() > totalRows;
+    public int getCurrentIncome() {
+        return currentIncome;
     }
 }

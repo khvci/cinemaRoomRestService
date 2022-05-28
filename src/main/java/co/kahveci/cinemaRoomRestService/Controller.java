@@ -39,4 +39,19 @@ public class Controller {
         cinema.returnTicket(seat, token);
         return new ResponseEntity<>(Map.of("returned_ticket", seat), HttpStatus.OK);
     }
+
+    @PostMapping("/stats")
+    public ResponseEntity<?> getStats(@RequestParam String password) {
+        if (!password.equals("super_secret")) {
+            return new ResponseEntity<>(Map.of("error", "The password is wrong!"), HttpStatus.UNAUTHORIZED);
+        }
+
+        StatsChecker stats = new StatsChecker(
+                cinema.getCurrentIncome(),
+                cinema.getAvailableSeats().size(),
+                cinema.getPurchasedSeats().size());
+
+        return new ResponseEntity<>(stats, HttpStatus.OK);
+
+    }
 }
