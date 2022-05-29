@@ -4,6 +4,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.Map;
+import java.util.Objects;
 
 @RestController
 public class Controller {
@@ -17,11 +18,15 @@ public class Controller {
     @PostMapping("/purchase")
     public ResponseEntity<?> purchaseSeat(@RequestBody Seat seat) {
         if (cinema.isSeatOutOfRange(seat)) {
-            return new ResponseEntity<>(Map.of("error", "The number of a row or a column is out of bounds!"), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(
+                    Map.of("error", "The number of a row or a column is out of bounds!"),
+                    HttpStatus.BAD_REQUEST);
         }
 
         if (cinema.getPurchasedSeats().contains(seat.getSeatId())) {
-            return new ResponseEntity<>(Map.of("error", "The ticket has been already purchased!"), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(
+                    Map.of("error", "The ticket has been already purchased!"),
+                    HttpStatus.BAD_REQUEST);
         }
 
         Ticket ticket = new Ticket(seat);
@@ -32,22 +37,26 @@ public class Controller {
     @PostMapping("/return")
     public ResponseEntity<?> returnTicket(@RequestParam String token) {
         if (!cinema.getPurchasedTickets().containsKey(token)) {
-            return new ResponseEntity<>(Map.of("error", "Wrong Token!"), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(
+                    Map.of("error", "Wrong Token!"),
+                    HttpStatus.BAD_REQUEST);
         }
 
         Seat seat = cinema.getPurchasedTickets().get(token);
         cinema.returnTicket(seat, token);
-        return new ResponseEntity<>(Map.of("returned_ticket", seat), HttpStatus.OK);
+        return new ResponseEntity<>(
+                Map.of("returned_ticket", seat),
+                HttpStatus.OK);
     }
 
     @PostMapping("/stats")
-    public ResponseEntity<?> getStats(@RequestBody String password) {
-        password = password
-                .split("password\": \"")[1]
-                .split("\"")[0];
+    public ResponseEntity<?> getStats(@RequestBody Map requestBody) {
+        String password = (String) requestBody.get("password");
 
-        if (!password.equals("super_secret")) {
-            return new ResponseEntity<>(Map.of("error", "The password is wrong!"), HttpStatus.UNAUTHORIZED);
+        if (!Objects.equals(password, "super_secret")) {
+            return new ResponseEntity<>(
+                    Map.of("error", "The password is wrong!"),
+                    HttpStatus.UNAUTHORIZED);
         }
 
         StatsChecker stats = new StatsChecker(
