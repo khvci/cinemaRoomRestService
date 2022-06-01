@@ -1,6 +1,6 @@
 <h1># cinemaRoomRestService</h1>
 
-Three out of four stages of the project are completed. Some examples from the application can be seen below.
+As of June 1st, the project is completed. Some examples from the application can be seen below.
 
 
 <h3>/seats endpoint provides available seats:</h3>
@@ -52,9 +52,18 @@ Three out of four stages of the project are completed. Some examples from the ap
 <img src="https://raw.githubusercontent.com/khvci/cinemaRoomRestService/master/screenshots/invalidToken.png" style="max-width: 100%;">
 
 
+<h3>/stats endpoint provides current statistics and http response 200, if the correct password provided:</h3>
+
+<img src="https://raw.githubusercontent.com/khvci/cinemaRoomRestService/master/screenshots/get%20stats.png">
+
+<h3>If the correct password is not provided, it returns an error message and http response 401 unauthorised:</h3>
+
+<img src="https://raw.githubusercontent.com/khvci/cinemaRoomRestService/master/screenshots/unauthorised.png">
+
+
 <h1>Project Overview</h1>
 
-All the project-related topics and the first three stages' implementations (of four) are completed. Green bars indicate completed topics. Progress as of May 25th:
+All the project-related topics and implementations are completed. Green bars indicate completed topics.
 
 <img src="https://raw.githubusercontent.com/khvci/cinemaRoomRestService/master/screenshots/project%20overview.png" style="max-width: 100%;">
 
