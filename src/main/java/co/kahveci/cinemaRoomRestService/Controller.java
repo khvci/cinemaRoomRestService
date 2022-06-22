@@ -1,70 +1,29 @@
 package co.kahveci.cinemaRoomRestService;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.Map;
-import java.util.Objects;
 
 @RestController
 public class Controller {
-    Cinema cinema = new Cinema(9,9);
 
     @GetMapping("/seats")
     public Cinema getSeats() {
-        return cinema;
+        return CinemaService.cinema;
     }
 
     @PostMapping("/purchase")
     public ResponseEntity<?> purchaseSeat(@RequestBody Seat seat) {
-        if (cinema.isSeatOutOfRange(seat)) {
-            return new ResponseEntity<>(
-                    Map.of("error", "The number of a row or a column is out of bounds!"),
-                    HttpStatus.BAD_REQUEST);
-        }
-
-        if (cinema.getPurchasedSeats().contains(seat.getSeatId())) {
-            return new ResponseEntity<>(
-                    Map.of("error", "The ticket has been already purchased!"),
-                    HttpStatus.BAD_REQUEST);
-        }
-
-        Ticket ticket = new Ticket(seat);
-        cinema.buyTicket(seat, ticket);
-        return new ResponseEntity<>(ticket, HttpStatus.OK);
+        return CinemaService.purchase(seat);
     }
 
     @PostMapping("/return")
     public ResponseEntity<?> returnTicket(@RequestParam String token) {
-        if (!cinema.getPurchasedTickets().containsKey(token)) {
-            return new ResponseEntity<>(
-                    Map.of("error", "Wrong Token!"),
-                    HttpStatus.BAD_REQUEST);
-        }
-
-        Seat seat = cinema.getPurchasedTickets().get(token);
-        cinema.returnTicket(seat, token);
-        return new ResponseEntity<>(
-                Map.of("returned_ticket", seat),
-                HttpStatus.OK);
+        return CinemaService.returnTicket(token);
     }
 
     @PostMapping("/stats")
     public ResponseEntity<?> getStats(@RequestBody Map requestBody) {
-        String password = (String) requestBody.get("password");
-
-        if (!Objects.equals(password, "super_secret")) {
-            return new ResponseEntity<>(
-                    Map.of("error", "The password is wrong!"),
-                    HttpStatus.UNAUTHORIZED);
-        }
-
-        StatsChecker stats = new StatsChecker(
-                cinema.getCurrentIncome(),
-                cinema.getAvailableSeats().size(),
-                cinema.getPurchasedSeats().size());
-
-        return new ResponseEntity<>(stats, HttpStatus.OK);
-
+        return CinemaService.getStats(requestBody);
     }
 }
