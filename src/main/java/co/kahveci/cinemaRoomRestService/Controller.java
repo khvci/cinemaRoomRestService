@@ -1,5 +1,6 @@
 package co.kahveci.cinemaRoomRestService;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.Map;
@@ -7,23 +8,25 @@ import java.util.Map;
 @RestController
 public class Controller {
 
+    @Autowired
+    CinemaService cinemaService;
     @GetMapping("/seats")
     public Cinema getSeats() {
-        return CinemaService.cinema;
+        return cinemaService.cinema;
     }
 
     @PostMapping("/purchase")
     public ResponseEntity<?> purchaseSeat(@RequestBody Seat seat) {
-        return CinemaService.purchase(seat);
+        return cinemaService.purchase(seat);
     }
 
     @PostMapping("/return")
     public ResponseEntity<?> returnTicket(@RequestParam String token) {
-        return CinemaService.returnTicket(token);
+        return cinemaService.returnTicket(token);
     }
 
     @PostMapping("/stats")
     public ResponseEntity<?> getStats(@RequestBody Map requestBody) {
-        return CinemaService.getStats(requestBody);
+        return cinemaService.getStats(requestBody);
     }
 }

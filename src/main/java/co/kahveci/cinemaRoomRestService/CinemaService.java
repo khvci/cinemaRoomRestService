@@ -1,14 +1,17 @@
 package co.kahveci.cinemaRoomRestService;
 
+import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
+
 import java.util.Map;
 import java.util.Objects;
-
+@Service
 public class CinemaService {
-    static Cinema cinema = new Cinema(9,9);
+    Cinema cinema = new Cinema(9,9);
 
-    static ResponseEntity<?> purchase(Seat seat) {
+    ResponseEntity<?> purchase(Seat seat) {
         if (cinema.isSeatOutOfRange(seat)) {
             return new ResponseEntity<>(
                     Map.of("error", "The number of a row or a column is out of bounds!"),
@@ -26,7 +29,7 @@ public class CinemaService {
         return new ResponseEntity<>(ticket, HttpStatus.OK);
     }
 
-    static ResponseEntity<?> returnTicket(String token) {
+    ResponseEntity<?> returnTicket(String token) {
         if (!cinema.getPurchasedTickets().containsKey(token)) {
             return new ResponseEntity<>(
                     Map.of("error", "Wrong Token!"),
@@ -40,7 +43,7 @@ public class CinemaService {
                 HttpStatus.OK);
     }
 
-    static ResponseEntity<?> getStats(Map requestBody) {
+    ResponseEntity<?> getStats(Map requestBody) {
         String password = (String) requestBody.get("password");
 
         if (!Objects.equals(password, "super_secret")) {
@@ -56,4 +59,5 @@ public class CinemaService {
 
         return new ResponseEntity<>(stats, HttpStatus.OK);
     }
+
 }
